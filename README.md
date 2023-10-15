@@ -1,8 +1,9 @@
 # minimalist photos downloader from unsplash
 
 ## run
-
+```
 go run main.go params (all params are optional, except access key)
+```
 
 ## how it work
 
@@ -19,15 +20,15 @@ go run main.go params (all params are optional, except access key)
  -q, query string, default photos
 
  query examples:
-  users/babakasotona/likes - get photos liked by user babakasotona
-  topics/people/photo - get all photos from "people" topic
-  "search/photos?query=office" - search all photos by query office
+   - users/babakasotona/likes - get photos liked by user babakasotona
+   - topics/people/photo - get all photos from "people" topic
+   - "search/photos?query=office" - search all photos by query office
 
  -iq, image query, default: &w=256&h=256&fit=crop&crop=faces 
 
  image query examples:
-  &w=1024&h=1024&fit=crop&crop=faces
-  more examples https://unsplash.com/documentation#example-image-use
+   - &w=1024&h=1024&fit=crop&crop=faces
+   - more examples https://unsplash.com/documentation#example-image-use
 
 ## Full example 
 
