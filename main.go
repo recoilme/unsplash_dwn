@@ -20,6 +20,7 @@ var PageOffset uint64
 var Query string
 var ImgQuery string
 var Prefix string
+var Captions bool
 
 type Photo struct {
 	ID             string     `json:"id,omitempty"`
@@ -74,12 +75,15 @@ func main() {
 	flag.StringVar(&AccessKey, "c", "", "Client Access Key")
 	flag.StringVar(&Query, "q", "photos", "query string")
 	flag.StringVar(&Prefix, "pr", "", "caption prefix")
+	flag.BoolVar(&Captions, "captions", false, "create captions")
 	flag.StringVar(&ImgQuery, "iq", "&w=256&h=256&fit=crop&crop=faces", "image query")
 	flag.Parse()
 
 	if AccessKey == "" {
 		log.Panicln("Missing access key.")
 	}
+
+	os.MkdirAll("img", os.ModePerm)
 
 	for {
 
@@ -250,18 +254,20 @@ func downloadFile(URL, fileName, iq, prefix, description string) error {
 		return err
 	}
 
-	desName := strings.Replace(name, ".png", ".caption", -1)
-	fileDesc, err := os.Create("img/" + desName)
-	if err != nil {
-		log.Println("Fail create file ", fileName)
-		return err
-	}
-	defer fileDesc.Close()
+	if Captions {
+		desName := strings.Replace(name, ".png", ".caption", -1)
+		fileDesc, err := os.Create("img/" + desName)
+		if err != nil {
+			log.Println("Fail create file ", fileName)
+			return err
+		}
+		defer fileDesc.Close()
 
-	_, err = io.Copy(fileDesc, strings.NewReader(prefix+description+","))
-	if err != nil {
-		log.Println("Fail write file desc ", fileName)
-		return err
+		_, err = io.Copy(fileDesc, strings.NewReader(prefix+description+","))
+		if err != nil {
+			log.Println("Fail write file desc ", fileName)
+			return err
+		}
 	}
 
 	return nil

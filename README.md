@@ -17,6 +17,8 @@ go run main.go params (all params are optional, except access key)
 
  -c access key, get it here: https://unsplash.com/oauth/applications/ (its free)
 
+ -captions, default flase, add .caption file with image description
+
  -q, query string, default photos
 
  query examples:
