@@ -35,5 +35,6 @@ go run main.go params (all params are optional, except access key)
 ## Full example 
 
 ```
-go run main.go -c=Access_key -q="search/photos?query=portrait" -iq="&w=128&h=128&fit=crop&crop=faces"
+go run main.go --captions -c= -q="search/photos?order_by=editorial&plus=none&license=free&query=closeup%2Baesthetic%2Beditorial%2Bportrait%2Bfeatured%2Banimals%2Bwallpapers" -iq="&max-w=1280&max-h=1280&fm=png&q=95&fit=fil"
 ```
+https://unsplash.com/s/photos/editorial?license=free

@@ -15,6 +15,8 @@ import (
 	"time"
 )
 
+const ext = ".png"
+
 var AccessKey string
 var PageOffset uint64
 var Query string
@@ -130,20 +132,21 @@ func main() {
 		diff := 72 - elapse
 		offset := int32(0)
 		if diff <= 0 {
-			offset = 72
-		} else if diff > 72 {
-			offset = 72
+			offset = 24
+		} else if diff > 24 {
+			offset = 24
 		} else {
 			offset = 0
 		}
 		delay := offset + rand.Int31n(10)
 		log.Println("Sleep: ", delay, " seconds.")
-		time.Sleep(time.Duration(delay) * time.Second)
+		time.Sleep(time.Duration(delay%10) * time.Second)
 	}
 }
 
 func getPhotos(key string, query string, page int) (Photos, error) {
 	client := http.Client{
+		Timeout: 3 * time.Second,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},
@@ -156,7 +159,7 @@ func getPhotos(key string, query string, page int) (Photos, error) {
 	q := req.URL.Query()
 	q.Add("per_page", "30")
 	q.Add("page", strconv.Itoa(page))
-	q.Add("order_by", "oldest")
+	//q.Add("order_by", "latest")
 	req.URL.RawQuery = q.Encode()
 
 	log.Println(req.URL.String(), " , query: ", req.URL.Query())
@@ -207,7 +210,7 @@ func UnmarshalPhotos(data []byte) (Photos, error) {
 }
 
 func downloadFile(URL, fileName, iq, prefix, description string) error {
-	name := fileName + ".png"
+	name := fileName + ext
 	_, err := os.Stat("img/" + name)
 
 	if err == nil {
@@ -223,7 +226,7 @@ func downloadFile(URL, fileName, iq, prefix, description string) error {
 		},
 	}
 	//Get the response bytes from the url
-	response, err := client.Get(URL + iq + "&fm=png")
+	response, err := client.Get(URL + iq)
 	//log.Println("photo url", URL+iq+"&fm=png")
 	if err != nil {
 		log.Println(fileName, " request error: ", err)
@@ -255,7 +258,7 @@ func downloadFile(URL, fileName, iq, prefix, description string) error {
 	}
 
 	if Captions {
-		desName := strings.Replace(name, ".png", ".caption", -1)
+		desName := strings.Replace(name, ext, ".caption", -1)
 		fileDesc, err := os.Create("img/" + desName)
 		if err != nil {
 			log.Println("Fail create file ", fileName)
